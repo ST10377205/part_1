@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Pre Approve Claims";
+}
+
+<!-- calling admin header -->
+<partial name="_CoordinatorHeader" />
+
+<div class="container h-100">
+    <div class="track_claims_container">
+        <h1>Pre Approve Claims </h1>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Lecture</th>
+                    <th>Sessions</th>
+                    <th>Hours</th>
+                    <th>Rate</th>
+                    <th>Total Amount</th>
+                    <th>Module</th>
+                    <th>Faculty</th>
+                    <th>Supporting Document</th>
+                    <th>Action</th>
+                    <th>Date Submitted</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td data-label="#">1</td>
+                    <td data-label="Lecture">Amogelang Matlhaga</td>
+                    <td data-label="Sessions">5</td>
+                    <td data-label="Hours">10</td>
+                    <td data-label="Rate">R250</td>
+                    <td data-label="Total Amount">R2500</td>
+                    <td data-label="Module">Programming 2B</td>
+                    <td data-label="Faculty">ICT Faculty</td>
+                    <td data-label="Supporting Document"><a href="#" class="btn-custom">View</a></td>
+                    <td data-label="Action">
+                        <button class="btn-custom approve">Pre Approve</button>
+                        <button class="btn-custom reject">Reject</button>
+                    </td>
+                    <td data-label="Date Submitted">2025-09-02</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>

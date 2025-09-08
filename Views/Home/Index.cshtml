@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- calling the header view -->
+<partial name="_Header" />
+
+<section class="hero-section">
+    <img src="~/images/pexels-leeloothefirst.jpg" alt="Hero Image" class="hero-image">
+    <div class="hero-content">
+        <h1 style="color: white">Contract Monthly Claim System</h1>
+        <p>Welcome to CMCS!</p>
+        <div class="btn-container">
+            <a href="@Url.Action("Login", "Account")" class="btn">Get Started</a>
+        </div>
+    </div>
+</section>
+
+<section id="introduction" class="section-light">
+    <div class="container">
+        <h2>Introducing CMCS</h2>
+        <div class="card-container">
+            <div class="card">
+                <p>The Contract Monthly Claim System (CMCS) is a digital platform designed to simplify and improve how academic claims are submitted, reviewed, and finalized within an institution.</p>
+            </div>
+            <div class="card">
+                <p>By replacing manual and partly digital processes, CMCS eliminates delays, lost paperwork, and lack of transparency, providing a streamlined solution for academic claims management.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="submission" class="section-dark">
+    <div class="container">
+        <h2>Easy Submission Process</h2>
+        <div class="card-container">
+            <div class="card">
+                <p>Lecturers can effortlessly register, log in, and submit their claims with all necessary details and supporting documents through a secure, user-friendly online system.</p>
+            </div>
+            <div class="card">
+                <p>Every submission is automatically recorded, ensuring accuracy, accountability, and smooth tracking of progress throughout the claims process.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="collaboration" class="section-light">
+    <div class="container">
+        <h2>Enhanced Collaboration</h2>
+        <div class="card-container">
+            <div class="card">
+                <p>CMCS fosters collaboration by enabling programme coordinators to efficiently review claims, verify details, and decide to approve or reject them.</p>
+            </div>
+            <div class="card">
+                <p>Programme management makes the final decision to complete or reject claims, ensuring a clear and structured workflow where all users remain accountable.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="efficiency" class="section-dark">
+    <div class="container">
+        <h2>Transparency and Efficiency</h2>
+        <div class="card-container">
+            <div class="card">
+                <p>By combining transparency, security, and accessibility across devices, CMCS saves time and promotes trust within the academic claims environment.</p>
+            </div>
+            <div class="card">
+                <p>Experience a system that enhances efficiency and builds confidence in every step of the claims process.</p>
+            </div>
+        </div>
+    </div>
+</section>
+

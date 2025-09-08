@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<!-- calling the header view -->
+<partial name="_Header" />
+
+<div class="container h-100">
+    <div class="login-card">
+        <h1>Login</h1>
+        <form method="post">
+            <div class="form-group">
+                <input type="text" id="email" name="email" placeholder="">
+                <label for="username">Email</label>
+                <span class="error-message" id="username-error"></span>
+            </div>
+            <div class="form-group password-container">
+                <input type="password" id="password" name="password" placeholder="">
+                <label for="password">Password</label>
+                <span class="password-toggle bi bi-eye-slash" data-target="password"></span>
+                <span class="error-message" id="password-error"></span>
+            </div>
+            <button type="submit" value="login" asp-area="" asp-controller="Lecture" asp-action="Index" class="btn-custom">Login</button>
+            
+        </form>
+        <div class="links">
+            <p><a href="@Url.Action("ForgotPassword", "Account")">Forgot Password?</a></p>
+            <p>Don't have an account? <a href="@Url.Action("Register", "Account")">Register</a></p>
+            <p><a asp-controller="Admin" asp-action="ProgramManager">Program Manager Dashboard</a></p>
+            <p><a asp-controller="Admin" asp-action="ProgramCoordinator">Program Coordinator Dashboard</a></p>
+
+
+        </div>
+    </div>
+</div>

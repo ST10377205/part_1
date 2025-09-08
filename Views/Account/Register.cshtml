@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Register";
+}
+
+<!-- calling the header view -->
+<partial name="_Header" />
+
+<div class="container h-100">
+    <div class="register-card">
+        <h1>Register </h1>
+        <form method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" id="first-name" name="firstName" placeholder=" " required>
+                    <label for="first-name">First Name</label>
+                    <span class="error-message" id="first-name-error"></span>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="last-name" name="lastName" placeholder=" " required>
+                    <label for="last-name">Last Name</label>
+                    <span class="error-message" id="last-name-error"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="email" id="email" name="email" placeholder=" " required>
+                <label for="email">Email</label>
+                <span class="error-message" id="email-error"></span>
+            </div>
+            <div class="form-group">
+                <select id="role" name="role" required>
+                    <option value="" disabled selected></option>
+                    <option value="Lecturer">Lecturer</option>
+                    <option value="ProgramCoordinator">Program Coordinator</option>
+                    <option value="ProgramManager">Program Manager</option>
+                </select>
+                <label for="role">Role</label>
+                <span class="error-message" id="role-error"></span>
+            </div>
+            <div class="form-row">
+                <div class="form-group password-container">
+                    <input type="password" id="password" name="password" placeholder=" " required>
+                    <label for="password">Password</label>
+                    <span class="password-toggle bi bi-eye-slash" data-target="password"></span>
+                    <span class="error-message" id="password-error"></span>
+                </div>
+                <div class="form-group password-container">
+                    <input type="password" id="confirm-password" name="confirmPassword" placeholder=" " required>
+                    <label for="confirm-password">Confirm Password</label>
+                    <span class="password-toggle bi bi-eye-slash" data-target="confirm-password"></span>
+                    <span class="error-message" id="confirm-password-error"></span>
+                </div>
+            </div>
+            <button type="submit" class="btn-custom">Register</button>
+        </form>
+        <div class="links">
+            <p>Already have an account? <a href="@Url.Action("Login", "Account")">Login</a></p>
+            <p>Forgot your password? <a href="@Url.Action("ForgotPassword", "Account")">Reset</a></p>
+        </div>
+    </div>
+</div>

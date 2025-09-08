@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- calling the header 
+using partial tag because it resembles HTML tags, making it easier to understand and maintain 
+intead of Use of Html.Partial may result in application deadlocks 
+-->
+<partial name="_LectureHeader" />
+
+<section class="cmcs-hero">
+    <div class="cmcs-image">
+        <img src="~/images/pexels-artempodrez-6823398.jpg" alt="Academic Claims System">
+    </div>
+    <div class="cmcs-info">
+        <h1 align="center">Contract Monthly Claim System <strong><em>(CMCS)</em></strong></h1>
+        <p>
+            The Contract Monthly Claim System (CMCS) is a digital platform designed to simplify and improve how academic claims are submitted, reviewed, and finalized within an institution. <br />
+            Traditionally, these claims are handled through manual or partly digital processes, which often result in delays, lost paperwork, and lack of transparency.
+        </p>
+        <div class="cmcs-cards">
+            <div class="cmcs-card">
+                <p>
+                    CMCS addresses these challenges by providing a secure and user-friendly online system where lecturers can easily register,
+                    log in, and submit their claims with all the necessary details and supporting documents..
+                </p>
+            </div>
+            <div class="cmcs-card">
+                <p>
+                    Every submission is automatically recorded, ensuring accuracy,
+                    accountability, and smooth tracking of progress. Beyond just submission, CMCS enhances collaboration between different roles in the claims process.
+                </p>
+            </div>
+            <div class="cmcs-card">
+                <p>
+                    Programme coordinators can efficiently review claims, verify the details, and decide to approve or reject them, while programme management makes the final decision to complete or reject claims.
+                </p>
+            </div>
+            <div class="cmcs-card">
+                <p>
+                    This structured workflow ensures that each step is clear and that all users remain accountable for their part in the process.
+                    By combining transparency, security, and accessibility
+                    across devices, CMCS not only saves time but also promotes trust and efficiency within the academic claims environment.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cmcs-features">
+    <h1>What Are Some Of Our Features</h1>
+    <p>Our features are as simple and easy to use</p>
+    <div class="features-row">
+        <div class="features-column">
+            <img src="/images/claim done.png" alt="Submit Claim">
+            <p>
+                The Submit Claim feature allows lecturers to easily submit their academic claims through a secure and user-friendly form. Lecturers can provide details such as the number of sessions, hours worked, rate per session or hour, and the module and faculty information. The system automatically calculates the total amount and enables the upload of supporting documents in PDF, JPG, or PNG format. Each claim is recorded with a submission date and set to a default "Pending" status, ensuring a smooth and structured start to the claims approval process.
+            </p>
+            <a href="@Url.Action("SubmitClaim", "Lecture")" class="button"><i class="fas fa-paper-plane"></i> Submit Claim</a>
+        </div>
+        <div class="features-column">
+            <img src="~/images/track done.png" alt="Track Claim">
+            <p>
+                The Track Claim feature provides lecturers with a clear overview of all their submitted claims, allowing them to follow the progress at every stage of the approval process. Claims are displayed in a table format showing key details such as sessions, hours, rate, total amount, module, faculty, and any attached supporting documents. Most importantly, the status of each claim—whether Pending, Approved, Rejected, or Finalized—is updated in real-time, ensuring transparency and keeping lecturers informed about the outcome of their submissions.
+            </p>
+            <a href="@Url.Action("TrackClaim", "Lecture")" class="button"><i class="fas fa-line-chart"></i> Track Claim</a>
+        </div>
+    </div>
+</section>
