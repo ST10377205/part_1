@@ -4,14 +4,14 @@ namespace part_1.Models
 {
     public class login
     {
-        //property for  email 
+        //property for  emails
 
         [Required]
         public string email { get; set; }
-        //propert for  password 
+        //propert for  passwords 
         [Required]
         public string password {  get; set; }
-        //property for  role 
+        //property for  roles 
         [Required]
         public string role { get; set; }
 
