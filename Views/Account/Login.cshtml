@@ -1,6 +1,5 @@
-﻿@{
-    ViewData["Title"] = "Login";
-}
+﻿@model part_1.Models.login
+
 
 <!-- calling the header view -->
 <partial name="_Header" />
@@ -8,20 +7,38 @@
 <div class="container h-100">
     <div class="login-card">
         <h1>Login</h1>
-        <form method="post">
+        <form asp-action="Login" method="post" enctype="multipart/form-data">
+
             <div class="form-group">
-                <input type="text" id="email" name="email" placeholder="">
-                <label for="username">Email</label>
-                <span class="error-message" id="username-error"></span>
-            </div>
-            <div class="form-group password-container">
-                <input type="password" id="password" name="password" placeholder="">
-                <label for="password">Password</label>
-                <span class="password-toggle bi bi-eye-slash" data-target="password"></span>
-                <span class="error-message" id="password-error"></span>
-            </div>
-            <button type="submit" value="login" asp-area="" asp-controller="Lecture" asp-action="Index" class="btn-custom">Login</button>
+                <input id="email" asp-for="email" type="email" placeholder="your email" />
+                <span asp-validation-for="email" />
+            </div>    
             
+
+            <div class="form-group">
+                <select id="role" asp-for="role">
+                    <option style="color:#555" value="lecturer">Lecturer</option>
+                    <option style="color:#555" value="programme coordinator">Program Coordinator</option>
+                    <option style="color:#555" value="programme manager">Program Manager</option>
+                </select>
+                <span asp-validation-for="role" />
+            </div>
+
+            <div class="form-group password-container">
+                <input asp-for="password" type="password" id="password" placeholder="your password" />
+                <span asp-validation-for="password" />
+
+            </div>
+
+
+            <div class="field">
+                <label style="color:red">@ViewBag.message</label>
+                <br />
+            </div>
+
+
+            <button type="submit" class="btn-custom">Login</button>
+
         </form>
         <div class="links">
             <p><a href="@Url.Action("ForgotPassword", "Account")">Forgot Password?</a></p>

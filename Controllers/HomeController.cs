@@ -15,6 +15,9 @@ namespace part_1.Controllers
 
         public IActionResult Index()
         {
+            auto_create_check check = new auto_create_check();
+            check.InitializeSystem();
+
             return View();
         }
 
