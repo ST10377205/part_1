@@ -1,12 +1,15 @@
 ﻿@model part_1.Models.login
+ 
 
 
 <!-- calling the header view -->
 <partial name="_Header" />
 
+<!-- Main container for the login form -->
 <div class="container h-100">
     <div class="login-card">
         <h1>Login</h1>
+        <!-- Login form: posts user input to the Login action in the controller -->
         <form asp-action="Login" method="post" enctype="multipart/form-data">
 
             <div class="form-group">
