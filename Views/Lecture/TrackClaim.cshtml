@@ -3,7 +3,11 @@
 
 <!-- calling the header view -->
 <partial name="_LectureHeader" />
+
+<!-- Styles for claim status colors -->
 <style>
+
+
     .claim_status.approved {
         color: green;
         font-weight: bold;
@@ -23,6 +27,8 @@
 <div class="container h-100">
     <div class="track_claims_container">
         <h1>Track Your Claims</h1>
+
+        <!-- Claims table -->
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
@@ -41,12 +47,14 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- Check if the model contains any claims -->
  @if (Model != null && Model.Count > 0)
                 {
                     int count = 1;
                     foreach (var claim in Model)
                     {
                         <tr>
+                            <!-- Display claim details -->
                             <td data-label="No">@(count++)</td>
                             <td data-label="Sessions">@claim.Sessions</td>
                             <td data-label="Hours">@claim.Hours</td>
@@ -54,6 +62,7 @@
                             <td data-label="Total Amount">R @(claim.Sessions* claim.Hours* claim.Rate)</td>
                             <td data-label="Module">@claim.NameModule</td>
                             <td data-label="Faculty">@claim.Name</td>
+                            <!-- Supporting document link -->
                             <td data-label="Supporting Document">
                                 @if (!string.IsNullOrEmpty(claim.SupportingDocumentPath))
                                 {
