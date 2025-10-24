@@ -78,7 +78,7 @@
 
 
         <script>
-            // Calculate total = sessions * rate
+            // Calculate total = sessions * rates
             function calculateTotal() {
                 const sessions = parseFloat(document.getElementById('Sessions').value) || 0;
                 const rate = parseFloat(document.getElementById('Rate').value) || 0;
@@ -86,7 +86,7 @@
                 document.getElementById('TotalAmount').value = total.toFixed(2);
             }
 
-            // Update total in real-time
+            // Update total in real-times
             document.getElementById('Sessions').addEventListener('input', calculateTotal);
             document.getElementById('Rate').addEventListener('input', calculateTotal);
         </script>
