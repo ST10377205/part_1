@@ -24,7 +24,7 @@ namespace part_1.Models
         [Required(ErrorMessage = "Role is required")]
         public string role { get; set; }
 
-        // Confirmation of the password (must match the 'password' field)
+        // Confirmation of the password (must match the 'password' field 1)
         [Required(ErrorMessage = "Password is required")]
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters long")]
         public string password { get; set; }
