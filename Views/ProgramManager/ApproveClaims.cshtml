@@ -88,7 +88,7 @@
                                             Approve
                                         </button>
                                     </form>
-                                    <!-- added fuctionaty -->
+                                    <!-- added fuctionaties -->
                                     <form asp-action="RejectClaims" asp-route-id="@claim.ClaimID" method="post" style="display:inline;">
                                         <button type="submit" class="claim_action_btn claim_reject"
                                                 onclick="return confirm('Reject this claim?');">
@@ -99,7 +99,7 @@
                                 else if (claim.ClaimStatus == "Approved")
 
                                 {
-                                    <!-- Option to reject an already approved claim -->
+                                    <!-- Option to reject an already approved claims-->
                                     <form asp-action="RejectClaims" asp-route-id="@claim.ClaimID" method="post" style="display:inline;">
                                         <button type="submit" class="claim_action_btn claim_reject"
                                                 onclick="return confirm('Reject this pre-approved claim?');">
