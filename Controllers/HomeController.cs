@@ -16,14 +16,14 @@ namespace part_1.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger) //constructor
         {
             _logger = logger;
         }
 
         public IActionResult Index()
         {
-            auto_create_check check = new auto_create_check();
+            auto_create_check check = new auto_create_check(); // Create an instance of the class
             check.InitializeSystem();
 
             return View();
