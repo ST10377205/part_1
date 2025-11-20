@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using part_1.Models;
 
 namespace part_1.Controllers
 {
@@ -15,9 +16,35 @@ namespace part_1.Controllers
         //  approve claims
         public IActionResult ApproveClaims()
         {
-            return View("/Views/ProgramManager/ApproveClaims.cshtml");
+
+            ViewBag.id = HttpContext.Session.GetString("id");
+            ViewBag.role = HttpContext.Session.GetString("role");
+
+            all_method method = new all_method();
+
+            var claimsList = method.get_all_claims();
+
+
+            return View("/Views/ProgramManager/ApproveClaims.cshtml",claimsList);
+        }
+        [HttpPost]
+        public IActionResult ApproveClaim(int id)
+        {
+            all_method method = new all_method();
+            method.update_claim_status(id, "Approved");
+            return RedirectToAction("ApproveClaims");
         }
 
+
+
+
+        [HttpPost]
+        public IActionResult RejectClaims(int id)
+        {
+            all_method method = new all_method();
+            method.update_claim_status(id, "Rejected");
+            return RedirectToAction("ApproveClaims");
+        }
         // lectures view
         public IActionResult Lectures()
         {
@@ -28,14 +55,52 @@ namespace part_1.Controllers
         //index view 
         public IActionResult ProgramCoordinator()
         {
+
             return View("/Views/ProgramCoordinator/Index.cshtml");
         }
 
-        // pre approve claims 
         public IActionResult PreApproveClaims()
         {
-            return View("/Views/ProgramCoordinator/PreApproveClaims.cshtml");
+            ViewBag.id = HttpContext.Session.GetString("id");
+            ViewBag.role = HttpContext.Session.GetString("role");
+
+            all_method method = new all_method();
+
+            var claimsList = method.get_all_claim();
+       
+
+            return View("/Views/ProgramCoordinator/PreApproveClaims.cshtml", claimsList);
         }
+
+        [HttpPost]
+        public IActionResult DeleteClaim(int id)
+        {
+            all_method method = new all_method();
+            method.delete_claim(id);
+            return RedirectToAction("/Views/ProgramCoordinator/PreApproveClaims.cshtml");
+        }
+
+   
+        [HttpPost]
+        public IActionResult PreApproveClaim(int id)
+        {
+            all_method method = new all_method();
+            method.update_claim_status(id, "Pre-approved");
+            return RedirectToAction("PreApproveClaims");
+        }
+
+
+
+
+        [HttpPost]
+        public IActionResult RejectClaim(int id)
+        {
+            all_method method = new all_method();
+            method.update_claim_status(id, "Rejected");
+            return RedirectToAction("PreApproveClaims");
+        }
+
+
 
     }
 }

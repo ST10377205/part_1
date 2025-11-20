@@ -1,6 +1,5 @@
-﻿@{
-    ViewData["Title"] = "Submit Claim";
-}
+﻿@model part_1.Models.claims
+
 
 <!-- calling the header view  -->
 <partial name="_LectureHeader" />
@@ -10,47 +9,86 @@
         <div class="icon-header">
             <i class="fa fa-folder-open"></i>
             <h1>Submit Claim</h1>
+
+            <div class="form-group">
+                <label>@ViewBag.message</label><br />
+            </div>
         </div>
         <form asp-action="SubmitClaim" method="post" enctype="multipart/form-data" class="claim_form">
             <div class="form-row">
                 <div class="form-group">
-                    <input type="number" id="Sessions" name="sessions" placeholder="" min="0" required oninput="total_calculate()">
-                    <label for="Sessions">Number of Sessions</label>
-                    <span class="error-message" id="sessions-error"></span>
+                    <label asp-for="Sessions"></label>
+                    <br /><br />
+                    <input asp-for="Sessions" class="form-control" id="Sessions" />
+                    <span asp-validation-for="Sessions" class="text-danger"></span>
+
+
                 </div>
                 <div class="form-group">
-                    <input type="number" id="Hours" name="hours" placeholder="" min="0" required oninput="total_calculate()">
-                    <label for="Hours">Number of Hours</label>
-                    <span class="error-message" id="hours-error"></span>
+                    <label asp-for="Hours"></label> <br /><br />
+                    <input asp-for="Hours" class="form-control" />
+                    <span asp-validation-for="Hours" class="text-danger"></span>
+
                 </div>
                 
             </div>
 
             <div class="form-group">
-                <input type="number" id="Rate" name="rate" placeholder="" min="0" step="0.01" required oninput="total_calculate()">
-                <label for="Rate">Rate Amount</label>
-                <span class="error-message" id="rate-error"></span>
+                <label asp-for="Rate"></label> <br /><br />
+                <input asp-for="Rate" class="form-control" id="Rate" max="500" />
+                <span asp-validation-for="Rate" class="text-danger"></span>
+
+
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <input type="text" id="faculty" name="facultyName" placeholder="" required>
-                    <label for="faculty">Faculty Name</label>
-                    <span class="error-message" id="faculty-error"></span>
+                    <label asp-for="Name">Faculty name</label> <br /><br />
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+
                 </div>
                 <div class="form-group">
-                    <input type="text" id="module" name="moduleName" placeholder="" required>
-                    <label for="module">Module Name</label>
-                    <span class="error-message" id="module-error"></span>
+                    <label asp-for="NameModule">Module name</label> <br /><br />
+                    <input asp-for="NameModule" class="form-control" />
+                    <span asp-validation-for="NameModule" class="text-danger"></span>
+
+
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="TotalAmount"></label> <br /><br />
+                    <input asp-for="TotalAmount" class="form-control" id="TotalAmount" readonly />
+
+
                 </div>
             </div>
             
             <div class="form-group">
-                <input type="file" id="documents" name="documents" placeholder="" accept=".pdf,.doc,.docx">
-                <label for="documents">Upload Supporting Documents</label>
-                <span class="error-message" id="documents-error"></span>
+                <label asp-for="SupportingDocument"></label>
+                <br /><br />
+                <input asp-for="SupportingDocument" type="file" class="form-control" accept=".pdf,.doc,.docx" />
+                <small style="font-size: 0.9em; color: gray;">upload only if needed</small>
+       
+
             </div>
+
             <button type="submit" class="btn-custom button_claim">Submit Claim</button>
         </form>
+
+
+        <script>
+            // Calculate total = sessions * rate
+            function calculateTotal() {
+                const sessions = parseFloat(document.getElementById('Sessions').value) || 0;
+                const rate = parseFloat(document.getElementById('Rate').value) || 0;
+                const total = sessions * rate;
+                document.getElementById('TotalAmount').value = total.toFixed(2);
+            }
+
+            // Update total in real-time
+            document.getElementById('Sessions').addEventListener('input', calculateTotal);
+            document.getElementById('Rate').addEventListener('input', calculateTotal);
+        </script>
     </div>
 </div>

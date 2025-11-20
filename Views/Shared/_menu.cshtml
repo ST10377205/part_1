@@ -9,15 +9,21 @@
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav justify-content-center flex-grow-1">
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ProgramManager">Home</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Home</a>
                     </li>
-                  
+
                     <li class="nav-item">
-                        <a class="nav-link text-dark" href="@Url.Action("ApproveClaims", "Admin")">Approve Claims</a>
+                        <a class="nav-link text-dark" href="@Url.Action("report", "Home")">Reports</a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="@Url.Action("invoices", "Home")">Invoice</a>
+
                     </li>
                 </ul>
 
                 <ul class="navbar-nav justify-content-end flex-grow-1">
+
                     <li class="nav-item">
                         <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Home" asp-action="Index">Logout</a>
                     </li>

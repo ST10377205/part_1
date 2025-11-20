@@ -1,6 +1,4 @@
-﻿@{
-    ViewData["Title"] = "Pre Approve Claims";
-}
+﻿@model List<part_1.Models.claims>
 
 <!-- calling admin header -->
 <partial name="_CoordinatorHeader" />
@@ -12,7 +10,6 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Lecture</th>
                     <th>Sessions</th>
                     <th>Hours</th>
                     <th>Rate</th>
@@ -20,28 +17,86 @@
                     <th>Module</th>
                     <th>Faculty</th>
                     <th>Supporting Document</th>
-                    <th>Action</th>
+                    <th>Status</th>
                     <th>Date Submitted</th>
+                    <th>Action</th>
+
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td data-label="#">1</td>
-                    <td data-label="Lecture">Amogelang Matlhaga</td>
-                    <td data-label="Sessions">5</td>
-                    <td data-label="Hours">10</td>
-                    <td data-label="Rate">R250</td>
-                    <td data-label="Total Amount">R2500</td>
-                    <td data-label="Module">Programming 2B</td>
-                    <td data-label="Faculty">ICT Faculty</td>
-                    <td data-label="Supporting Document"><a href="#" class="btn-custom">View</a></td>
-                    <td data-label="Action">
-                        <button class="btn-custom approve">Pre Approve</button>
-                        <button class="btn-custom reject">Reject</button>
+                @if (Model != null && Model.Count > 0)
+                {
+                    int count = 1;
+                    foreach (var claim in Model)
+                    {
+                        <tr>
+                            <td data-label="No">@(count++)</td>
+                            <td data-label="Sessions">@claim.Sessions</td>
+                            <td data-label="Hours">@claim.Hours</td>
+                            <td data-label="Rate">R @claim.Rate</td>
+                            <td data-label="Total Amount">R @(claim.Sessions* claim.Hours* claim.Rate)</td>
+                            <td data-label="Module">@claim.NameModule</td>
+                            <td data-label="Faculty">@claim.Name</td>
+                            <td data-label="Supporting Document">
+                                @if (!string.IsNullOrEmpty(claim.SupportingDocumentPath))
+                                {
+                                    <a href="@claim.SupportingDocumentPath" target="_blank">View</a>
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                            <td data-label="Status">
+                                <span class="claim_status @(claim.ClaimStatus == "Approved" ? "approved" :
+                                                                                                                                            claim.ClaimStatus == "Pending" ? "pending" : "other")">
+                            @claim.ClaimStatus
+                        </span>
                     </td>
-                    <td data-label="Date Submitted">2025-09-02</td>
-                </tr>
+                    <td>@claim.CreatingDate.ToString("yyyy-MM-dd")</td>
 
+
+                            <td>
+                        @if (claim.ClaimStatus == "Pending")
+                                {
+                                    <!-- Show Pre-approve and Reject buttons for pending claims -->
+                                    <form asp-action="PreApproveClaim" asp-route-id="@claim.ClaimID" method="post" style="display:inline;">
+                                        <button type="submit" class="claim_action_btn claim_preapprove"
+                                                onclick="return confirm('Pre-approve this claim?');">
+                                            Pre-approve
+                                        </button>
+                                    </form>
+
+                                    <form asp-action="RejectClaim" asp-route-id="@claim.ClaimID" method="post" style="display:inline;">
+                                        <button type="submit" class="claim_action_btn claim_reject"
+                                                onclick="return confirm('Reject this claim?');">
+                                            Reject
+                                        </button>
+                                    </form>
+                                }
+                                else if (claim.ClaimStatus == "Pre-approved")
+                                {
+                                    <form asp-action="RejectClaim" asp-route-id="@claim.ClaimID" method="post" style="display:inline;">
+                                        <button type="submit" class="claim_action_btn claim_reject"
+                                                onclick="return confirm('Reject this pre-approved claim?');">
+                                            Reject
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="10" style="text-align:center;">No claims found.</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>

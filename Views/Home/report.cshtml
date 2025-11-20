@@ -1,0 +1,649 @@
+﻿@model part_1.Models.LecturerClaimViewModel
+@Html.Partial("_menu")
+@using System.Text.Json
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="container-fluid px-4 mt-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 fw-bold text-dark mb-1">Claims Analytics Dashboard</h1>
+            <p class="text-muted">Comprehensive overview of lecturer claims and payroll data</p>
+        </div>
+        <div class="d-flex gap-2">
+            
+            <button class="btn btn-primary" onclick="generateCompanyReport()">
+                <i class="fas fa-file-pdf me-2"></i>Company Report
+            </button>
+        </div>
+    </div>
+
+    @{
+        var totalLecturers = Model.LecturerIDs.Distinct().Count();
+        var totalClaims = Model.ClaimIDs.Count;
+        var totalHours = Model.NumberOfHours.Sum();
+        var totalAmount = Model.TotalAmounts.Sum();
+        var averageClaim = totalClaims > 0 ? totalAmount / totalClaims : 0;
+    }
+
+    <!-- Key Metrics -->
+    <div class="row g-3 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card metric-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="metric-icon bg-primary bg-opacity-10">
+                            <i class="fas fa-users text-primary"></i>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted mb-1">Total Lecturers</p>
+                            <h4 class="mb-0 fw-bold">@totalLecturers</h4>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span class="badge bg-primary bg-opacity-10 text-primary">Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card metric-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="metric-icon bg-success bg-opacity-10">
+                            <i class="fas fa-file-invoice text-success"></i>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted mb-1">Total Claims</p>
+                            <h4 class="mb-0 fw-bold">@totalClaims</h4>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span class="badge bg-success bg-opacity-10 text-success">Submitted</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card metric-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="metric-icon bg-warning bg-opacity-10">
+                            <i class="fas fa-clock text-warning"></i>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted mb-1">Total Hours</p>
+                            <h4 class="mb-0 fw-bold">@totalHours</h4>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span class="badge bg-warning bg-opacity-10 text-warning">Hours</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card metric-card border-0">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="metric-icon bg-danger bg-opacity-10">
+                            <i class="fas fa-coins text-danger"></i>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted mb-1">Total Amount</p>
+                            <h4 class="mb-0 fw-bold">@totalAmount.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("en-ZA"))</h4>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span class="badge bg-danger bg-opacity-10 text-danger">@averageClaim.ToString("C", System.Globalization.CultureInfo.CreateSpecificCulture("en-ZA")) avg</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters & Controls -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-uppercase text-muted">Date Range</label>
+                    <div class="input-group">
+                        <input type="date" id="filter_from" class="form-control form-control-sm">
+                        <span class="input-group-text">to</span>
+                        <input type="date" id="filter_to" class="form-control form-control-sm">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-uppercase text-muted">Faculty</label>
+                    <select id="filter_faculty" class="form-select form-select-sm">
+                        <option value="">All Faculties</option>
+                        @foreach (var faculty in Model.FacultyNames.Distinct())
+                        {
+                            <option value="@faculty">@faculty</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-uppercase text-muted">View</label>
+                    <select class="form-select form-select-sm">
+                        <option>All Claims</option>
+                        <option>Approved Only</option>
+                        <option>Pending Review</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-sm btn-outline-secondary w-100" onclick="updateChartsAndTable()">
+                        <i class="fas fa-sync-alt me-2"></i>Apply Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-8">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="card-title mb-0 fw-semibold">
+                        <i class="fas fa-chart-line text-primary me-2"></i>
+                        Claims Timeline
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartTimeline" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="card-title mb-0 fw-semibold">
+                        <i class="fas fa-chart-pie text-warning me-2"></i>
+                        Faculty Distribution
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartFaculty" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="card-title mb-0 fw-semibold">
+                        <i class="fas fa-chart-bar text-success me-2"></i>
+                        Hours by Lecturer
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartHours" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="card-title mb-0 fw-semibold">
+                        <i class="fas fa-trending-up text-info me-2"></i>
+                        Performance Metrics
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 text-center">
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded">
+                                <h3 class="fw-bold text-primary" id="avgHours">0</h3>
+                                <p class="text-muted mb-0">Avg Hours/Claim</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded">
+                                <h3 class="fw-bold text-success" id="completionRate">0%</h3>
+                                <p class="text-muted mb-0">Completion Rate</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded">
+                                <h3 class="fw-bold text-warning" id="peakMonth">-</h3>
+                                <p class="text-muted mb-0">Peak Month</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded">
+                                <h3 class="fw-bold text-danger" id="topFaculty">-</h3>
+                                <p class="text-muted mb-0">Top Faculty</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 py-3">
+            <h5 class="card-title mb-0 fw-semibold">
+                <i class="fas fa-table text-dark me-2"></i>
+                Lecturer Claims Overview
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="lecturerTable">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="border-0 fw-semibold text-muted small text-uppercase">Lecturer</th>
+                            <th class="border-0 fw-semibold text-muted small text-uppercase">Faculty</th>
+                            <th class="border-0 fw-semibold text-muted small text-uppercase text-center">Claims</th>
+                            <th class="border-0 fw-semibold text-muted small text-uppercase text-center">Hours</th>
+                            <th class="border-0 fw-semibold text-muted small text-uppercase text-center">Amount</th>
+                            <th class="border-0 fw-semibold text-muted small text-uppercase text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Table will be populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const rawClaims = @Html.Raw(JsonSerializer.Serialize(Model));
+
+    // Professional color scheme
+    const chartColors = {
+        primary: '#4361ee',
+        secondary: '#6c757d',
+        success: '#28a745',
+        info: '#17a2b8',
+        warning: '#ffc107',
+        danger: '#dc3545',
+        dark: '#343a40',
+        light: '#f8f9fa',
+        purple: '#6f42c1',
+        teal: '#20c997',
+        cyan: '#0dcaf0'
+    };
+
+    const gradientPalette = [
+        'rgba(67, 97, 238, 0.8)',
+        'rgba(40, 167, 69, 0.8)',
+        'rgba(255, 193, 7, 0.8)',
+        'rgba(220, 53, 69, 0.8)',
+        'rgba(111, 66, 193, 0.8)',
+        'rgba(32, 201, 151, 0.8)',
+        'rgba(13, 202, 240, 0.8)'
+    ];
+
+    function generateReport(btn) {
+        const claims = JSON.parse(btn.getAttribute('data-claims'));
+        const claimIDs = claims.map(c => c.ClaimID);
+
+        fetch('/Home/GeneratePayrollPDF', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(claimIDs)
+        })
+        .then(res => res.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        });
+    }
+
+    function generateCompanyReport() {
+        fetch('/Home/GenerateCompanyReportPDF', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(rawClaims.ClaimIDs)
+        })
+        .then(res => res.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        })
+        .catch(err => console.error('Error generating company report:', err));
+    }
+
+    function filterClaims() {
+        const from = document.getElementById('filter_from').value;
+        const to = document.getElementById('filter_to').value;
+        const faculty = document.getElementById('filter_faculty').value;
+
+        return rawClaims.ClaimIDs.map((id, idx) => ({
+            ClaimID: rawClaims.ClaimIDs[idx],
+            Lecturer: rawClaims.FullNames[idx],
+            Faculty: rawClaims.FacultyNames[idx],
+            Hours: rawClaims.NumberOfHours[idx],
+            Amount: rawClaims.TotalAmounts[idx],
+            Date: rawClaims.CreatingDates[idx]
+        })).filter(c => {
+            if(faculty && c.Faculty !== faculty) return false;
+            if(from && new Date(c.Date) < new Date(from)) return false;
+            if(to && new Date(c.Date) > new Date(to)) return false;
+            return true;
+        });
+    }
+
+    let chartHours, chartTimeline, chartFaculty;
+
+    function updateChartsAndTable() {
+        const data = filterClaims();
+
+        // Update performance metrics
+        updatePerformanceMetrics(data);
+
+        // Hours Per Lecturer Chart
+        const hoursLabels = [...new Set(data.map(c => c.Lecturer))];
+        const hoursValues = hoursLabels.map(l => data.filter(c => c.Lecturer === l).reduce((a,b)=>a+b.Hours,0));
+
+        if(chartHours) chartHours.destroy();
+        const hoursCtx = document.getElementById('chartHours').getContext('2d');
+        const hoursGradient = hoursCtx.createLinearGradient(0, 0, 0, 400);
+        hoursGradient.addColorStop(0, 'rgba(67, 97, 238, 0.8)');
+        hoursGradient.addColorStop(1, 'rgba(67, 97, 238, 0.2)');
+
+        chartHours = new Chart(hoursCtx, {
+            type: 'bar',
+            data: {
+                labels: hoursLabels,
+                datasets: [{
+                    label: 'Total Hours',
+                    data: hoursValues,
+                    backgroundColor: hoursGradient,
+                    borderColor: chartColors.primary,
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Timeline Chart
+        const sortedData = data.slice().sort((a,b)=>new Date(a.Date)-new Date(b.Date));
+        const timelineLabels = sortedData.map(c=>new Date(c.Date).toLocaleDateString());
+        const timelineValues = sortedData.map(c=>c.Amount);
+
+        if(chartTimeline) chartTimeline.destroy();
+        const timelineCtx = document.getElementById('chartTimeline').getContext('2d');
+        const timelineGradient = timelineCtx.createLinearGradient(0, 0, 0, 400);
+        timelineGradient.addColorStop(0, 'rgba(40, 167, 69, 0.8)');
+        timelineGradient.addColorStop(1, 'rgba(40, 167, 69, 0.1)');
+
+        chartTimeline = new Chart(timelineCtx, {
+            type: 'line',
+            data: {
+                labels: timelineLabels,
+                datasets: [{
+                    label: 'Claim Amount (ZAR)',
+                    data: timelineValues,
+                    borderColor: chartColors.success,
+                    backgroundColor: timelineGradient,
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: chartColors.success,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: {
+                            callback: function(value) {
+                                return 'R ' + value.toLocaleString();
+                            }
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Faculty Pie Chart
+        const facultyLabels = [...new Set(data.map(c=>c.Faculty))];
+        const facultyValues = facultyLabels.map(f => data.filter(c=>c.Faculty===f).length);
+
+        if(chartFaculty) chartFaculty.destroy();
+        chartFaculty = new Chart(document.getElementById('chartFaculty'), {
+            type: 'doughnut',
+            data: {
+                labels: facultyLabels,
+                datasets: [{
+                    data: facultyValues,
+                    backgroundColor: gradientPalette,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { usePointStyle: true }
+                    }
+                },
+                cutout: '65%'
+            }
+        });
+
+        // Update Table
+        updateTable(data);
+    }
+
+    function updatePerformanceMetrics(data) {
+        // Average Hours per Claim
+        const avgHours = data.length > 0 ? (data.reduce((a,b)=>a+b.Hours,0) / data.length).toFixed(1) : 0;
+        document.getElementById('avgHours').textContent = avgHours;
+
+        // Completion Rate (simulated)
+        const completionRate = data.length > 0 ? Math.min(100, Math.round((data.length / rawClaims.ClaimIDs.length) * 100)) : 0;
+        document.getElementById('completionRate').textContent = completionRate + '%';
+
+        // Peak Month
+        const monthCounts = {};
+        data.forEach(claim => {
+            const month = new Date(claim.Date).toLocaleString('default', { month: 'long' });
+            monthCounts[month] = (monthCounts[month] || 0) + 1;
+        });
+        const peakMonth = Object.keys(monthCounts).reduce((a,b) => monthCounts[a] > monthCounts[b] ? a : b, '-');
+        document.getElementById('peakMonth').textContent = peakMonth;
+
+        // Top Faculty
+        const facultyCounts = {};
+        data.forEach(claim => {
+            facultyCounts[claim.Faculty] = (facultyCounts[claim.Faculty] || 0) + 1;
+        });
+        const topFaculty = Object.keys(facultyCounts).reduce((a,b) => facultyCounts[a] > facultyCounts[b] ? a : b, '-');
+        document.getElementById('topFaculty').textContent = topFaculty;
+    }
+
+    function updateTable(data) {
+        const tbody = document.querySelector("#lecturerTable tbody");
+        tbody.innerHTML = '';
+        const lecturers = [...new Set(data.map(c => c.Lecturer))];
+
+        lecturers.forEach(lect => {
+            const lecturerData = data.filter(c => c.Lecturer === lect);
+            const faculty = lecturerData[0].Faculty;
+            const totalClaims = lecturerData.length;
+            const totalHours = lecturerData.reduce((a,b)=>a+b.Hours,0);
+            const totalAmount = lecturerData.reduce((a,b)=>a+b.Amount,0);
+
+            const row = `<tr>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-sm bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3">
+                            <i class="fas fa-user text-primary fs-6"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-semibold">${lect}</h6>
+                            <small class="text-muted">${totalClaims} claims</small>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span class="badge bg-light text-dark">${faculty}</span>
+                </td>
+                <td class="text-center">
+                    <span class="fw-bold text-primary">${totalClaims}</span>
+                </td>
+                <td class="text-center">
+                    <span class="fw-bold text-warning">${totalHours}</span>
+                </td>
+                <td class="text-center">
+                    <span class="fw-bold text-success">${totalAmount.toLocaleString('en-ZA', {style:'currency', currency:'ZAR'})}</span>
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-outline-danger" onclick='generateReport(this)' data-claims='${JSON.stringify(lecturerData)}'>
+                        <i class="fas fa-file-pdf me-1"></i>PDF
+                    </button>
+                </td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    // Initialize filters and charts
+    document.getElementById('filter_from').addEventListener('change', updateChartsAndTable);
+    document.getElementById('filter_to').addEventListener('change', updateChartsAndTable);
+    document.getElementById('filter_faculty').addEventListener('change', updateChartsAndTable);
+
+    window.onload = function() {
+        updateChartsAndTable();
+    };
+</script>
+
+<style>
+    :root {
+        --bs-primary: #4361ee;
+        --bs-primary-rgb: 67, 97, 238;
+    }
+
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .metric-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+        }
+
+    .metric-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card {
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .card-header {
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .table th {
+        font-weight: 600;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        padding: 1rem 0.75rem;
+    }
+
+    .table td {
+        padding: 1rem 0.75rem;
+        vertical-align: middle;
+    }
+
+    .avatar-sm {
+        width: 40px;
+        height: 40px;
+    }
+
+    .btn {
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-sm {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+    }
+
+    .form-control, .form-select {
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+        transition: all 0.2s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--bs-primary);
+            box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.1);
+        }
+
+    .badge {
+        font-weight: 500;
+        border-radius: 4px;
+    }
+
+    .input-group-text {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        font-size: 0.875rem;
+    }
+
+    .shadow-sm {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.04) !important;
+    }
+</style>
