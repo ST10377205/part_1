@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Security.Claims;
 
 namespace part_1.Models
-{
+{        // Class to manage lecturer data in the claim system
     public class lecturers
     {
         private string connection = @"Server=(localdb)\claim_system;Database=claims_database;";

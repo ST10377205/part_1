@@ -1,7 +1,8 @@
 ﻿using System.Data.SqlClient;
 
 namespace part_1.Models
-{
+{        /// Class containing methods for user authentication and claim management
+         
     public class all_method
     {
 

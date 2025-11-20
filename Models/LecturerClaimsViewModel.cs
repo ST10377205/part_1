@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace part_1.Models
-{
+{                   /// ViewModel to load and store approved lecturer claims from the database
     public class LecturerClaimViewModel
     {
         public List<int> ClaimIDs { get; set; }

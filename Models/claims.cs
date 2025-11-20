@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace part_1.Models
-{
+{       // Model for faculty claims with validation attributes
     public class claims
     {
 
