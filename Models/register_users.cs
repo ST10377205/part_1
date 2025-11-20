@@ -1,14 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace part_1.Models
-{
-    public class register_users
+{                                                                      
+                                        /// Model for user registration with validation attributes
+                                       
+    public class register_users      
     {
-        [Required(ErrorMessage = "Name is required")]
-        public string name { get; set; }
+        [Required(ErrorMessage = "Name is required")]     
+        public string name { get; set; }     /// User's first name
 
         [Required(ErrorMessage = "Surname is required")]
-        public string surname { get; set; }
+        public string surname { get; set; }    // User's surname
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email format")]
