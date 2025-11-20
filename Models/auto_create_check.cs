@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace part_1.Models
 {
     public class auto_create_check
-    {
+    {     //  Class to initialize LocalDB instance, database, and tables for claim system
 
 
         private string instanceName = "claim_system";
@@ -83,7 +83,7 @@ namespace part_1.Models
                 RedirectStandardError = true,
                 CreateNoWindow = true
             };
-
+            // Check if the LocalDB instance exists by querying its info
             using (var process = new Process { StartInfo = processStartInfo })
             {
                 process.Start();
@@ -120,7 +120,7 @@ namespace part_1.Models
                 using (var command = new SqlCommand(createDbQuery, connection))
                 {
                     command.ExecuteNonQuery();
-                }
+                } 
             }
 
             Console.WriteLine($" Database '{databaseName}' verified or created.");

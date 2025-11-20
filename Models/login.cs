@@ -2,7 +2,7 @@
 
 namespace part_1.Models
 {
-    public class login
+    public class login    // Model for user login
     {
 
 
